@@ -2,14 +2,17 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const morgan = require('morgan');
-require('dotenv').config();
+const dotenv = require('dotenv');
+
+// Load environment variables from server.env
+dotenv.config({ path: './server.env' });
 
 const app = express();
-const port = 3000;
+const port = 3021;
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:8080', 'http://127.0.0.1:5501'], // Allow multiple origins
+    origin: ['http://98.80.67.100:9032', 'http://98.80.67.100:9033'],     // Allow multiple origins
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
@@ -18,11 +21,11 @@ app.use(morgan('combined')); // Logging middleware
 
 // PostgreSQL database configuration
 const pool = new Pool({
-  user: 'postgres', // Replace with your PostgreSQL username
-  host: 'localhost',
-  database: 'offboarding_db',
-  password: 'Veera@0134', // Replace with your PostgreSQL password
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
 
 // Test database connection
@@ -156,5 +159,5 @@ app.use((err, req, res, next) => {
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://0.0.0.0:${port}`);
 });
