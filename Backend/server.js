@@ -2,33 +2,27 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
-
-// Load environment variables from server.env
-dotenv.config({ path: './server.env' });
+require('dotenv').config();
 
 const app = express();
-const port = 3021;
+const port = 3951;
 
-// Middleware
 app.use(cors({
-    origin: ['http://98.80.67.100:9032', 'http://98.80.67.100:9033'],     // Allow multiple origins
+    origin: ['http://3.88.203.125:9004', 'http://127.0.0.1:5501', 'http://127.0.0.1:5503'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
 app.use(express.json());
-app.use(morgan('combined')); // Logging middleware
+app.use(morgan('combined')); 
 
-// PostgreSQL database configuration
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  user: 'postgres',
+  host: 'postgres',
+  database: 'offboarding_db',
+  password: 'admin123', 
+  port: 5432,
 });
 
-// Test database connection
 pool.connect((err, client, release) => {
     if (err) {
         console.error('Error connecting to PostgreSQL:', err.stack);
@@ -39,7 +33,6 @@ pool.connect((err, client, release) => {
     }
 });
 
-// Create offboarding table if it doesn't exist
 const createTableQuery = `
     CREATE TABLE IF NOT EXISTS offboarding (
         id SERIAL PRIMARY KEY,
@@ -62,7 +55,6 @@ pool.query(createTableQuery)
         process.exit(1);
     });
 
-// API endpoint to handle form submission
 app.post('/api/offboarding/submit', async (req, res, next) => {
     console.log('Received POST request to /api/offboarding/submit:', req.body);
     const {
@@ -76,7 +68,6 @@ app.post('/api/offboarding/submit', async (req, res, next) => {
         acknowledgment
     } = req.body;
 
-    // Server-side validation
     if (!empName || !/^[A-Z][a-zA-Z]+(?: [A-Z][a-zA-Z]+)*$/.test(empName)) {
         return res.status(400).json({ error: 'Invalid employee name' });
     }
@@ -102,7 +93,6 @@ app.post('/api/offboarding/submit', async (req, res, next) => {
         return res.status(400).json({ error: 'Invalid bonus amount' });
     }
 
-    // Insert data into PostgreSQL
     const insertQuery = `
         INSERT INTO offboarding (employee_name, position, department, employee_id, feedback, final_salary, bonus, acknowledgment)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -125,7 +115,6 @@ app.post('/api/offboarding/submit', async (req, res, next) => {
     }
 });
 
-// API endpoint to retrieve all offboarding records
 app.get('/api/offboarding', async (req, res, next) => {
     console.log('Received GET request to /api/offboarding');
     try {
@@ -151,13 +140,11 @@ app.get('/api/offboarding', async (req, res, next) => {
     }
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Server error:', err.stack);
     res.status(500).json({ error: 'Internal server error. Please try again later.' });
 });
 
-// Start the server
 app.listen(port, () => {
-    console.log(`Server running at http://0.0.0.0:${port}`);
+    console.log(`Server running at http://3.88.203.125:${port}`);
 });
