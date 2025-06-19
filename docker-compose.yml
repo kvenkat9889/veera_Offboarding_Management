@@ -6,7 +6,7 @@ services:
     container_name: offboarding_postgres01
     restart: always
     ports:
-      - "5567:5432"
+      - "5200:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin123
@@ -19,7 +19,7 @@ services:
     build: ./Backend
     container_name: offboarding_backend01
     ports:
-      - "3951:3951"
+      - "3100:3100"
     env_file:
       - ./Backend/server.env
     depends_on:
@@ -29,7 +29,7 @@ services:
     build: ./Frontend
     container_name: offboarding_frontend01
     ports:
-      - "9004:80"
+      - "8200:80"
     depends_on:
       - backend
 
@@ -37,7 +37,7 @@ services:
     build: ./HR
     container_name: offboarding_hr01
     ports:
-      - "9005:80"
+      - "8201:80"
     depends_on:
       - backend
 

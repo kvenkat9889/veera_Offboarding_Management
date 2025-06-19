@@ -5,10 +5,10 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
-const port = 3951;
+const port = 3100;
 
 app.use(cors({
-    origin: ['http://3.88.203.125:9004', 'http://127.0.0.1:5501', 'http://127.0.0.1:5503'],
+    origin: ['http://44.223.23.145:8200', 'http://127.0.0.1:5501', 'http://127.0.0.1:5503'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
@@ -146,5 +146,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://3.88.203.125:${port}`);
+    console.log(`Server running at http://44.223.23.145:${port}`);
 });
